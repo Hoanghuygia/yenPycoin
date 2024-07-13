@@ -25,14 +25,6 @@ class Blockchain{
     }
 
     minePendingTransactions(miningRewardAddress){
-        //this method is to when miner call it would send the rewards to this address
-    //     let block = new Block(Date.now(), this.pendingTransactions);
-
-    //     block.mineBlock(this.difficulty);
-    //     this.chain.push(block);
-    //     console.log("Mined successfully");
-
-    //     this.pendingTransactions = [new Transactions(null, miningRewardAddress, this.miningReward)]
 
         const rewardTx = new Transactions(null, miningRewardAddress, this.miningReward);
         this.pendingTransactions.push(rewardTx);
@@ -49,11 +41,11 @@ class Blockchain{
 
     addTransaction(transaction){
 
-        if(!transaction.fromAddress || !transaction.toAddress){
+        if(!transaction.fromAddress || !transaction.toAddress){//if it do not have fromAddress still has case the rewarding mining
             throw new Error("Transaction mush include from and to addresses");
         }
 
-        if(!transaction.isValid){
+        if(!transaction.isValid){//we checked it here
             throw new Error("Transaction is not valid");
         }
 
@@ -77,7 +69,7 @@ class Blockchain{
         return balance;
     }
 
-    isChainValid(){
+    isChainValid(){//why we have to check it, we have already checked it when mining to blockchain right ?
         for(let i = 1; i < this.chain.length; i++){
             const currentBlock = this.chain[i];
             const previousBlock = this.chain[i-1];

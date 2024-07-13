@@ -10,18 +10,15 @@ class Transactions{
     }
 
     calculateHash(){
-        return hash(this.fromAddress + this.toAddress + this.amount.toString());
+        return hash(this.fromAddress + this.toAddress + this.amount).toString();
     }
 
-    signTransaction(signingKey){//the signing key is the key that will get from the keygenerator.js
-        if(signingKey.getPublic('hex') !== this.fromAddress){//we only use wallet that we have private key, and private key relate to public key, so ...
+    signTransaction(signingKey){
+        console.log("Signing ...");
+        if(signingKey.getPublic('hex') !== this.fromAddress){
             throw new Error("You can not sing transaction for other waller");
 
-        }// hàm này mà dịch ra thực tế thì đơn giản là nó kiểm tra xem người ký có phải người cần ký hay không
-        // sau đó thì người ký sẽ phải đọc tài liệu và phá hủy nó (hash)
-        // tiếp đó thì người ký ký chữ kí
-        // cuối cùng là chuyển chữ kí sang dạng có thể chuyển tiếp được
-        // TODO: chút thử in cái sig ra xem nó như thế nào !!!
+        }
 
         const hashTx = this.calculateHash();
         const sig = signingKey.sign(hashTx, 'base64');
@@ -34,9 +31,13 @@ class Transactions{
         if(!this.signature || this.signature.length === 0){
             throw new Error("No signature provided");
         }
-
+        console.log("isValid method");
+        
         const publicKey = ec.keyFromPublic(this.fromAddress, 'hex');
+        console.log(publicKey);
+        console.log("isValid method");
         return publicKey.verify(this.calculateHash(), this.signature);// verify the hash signed by thís signature 
+        //bởi vì để tính signature, mình cần hash của transaction, nên cơ bản là mình cung cấp lại hash để nó xác định xem signature đó có đúng không
     }
 }
 
